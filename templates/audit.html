@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Audit trail - CipherGuard Store{% endblock %}
+{% block content %}
+<h1>Steganographic audit trail</h1>
+<p class="auth-sub">
+  These records are not written to a plaintext log file. Every event is embedded into the least significant bits of
+  <a href="{{ url_for('audit_image') }}">a cover image</a> (data/audit.png) and extracted on demand. An attacker who copies the file sees only a picture.
+</p>
+
+<div class="chip-row">
+  <span class="chip chip-info">Records: {{ count }}</span>
+  <span class="chip chip-ok">Successes: {{ result_success }}</span>
+  <span class="chip chip-warn">Failures: {{ result_fail }}</span>
+  <span class="chip chip-danger">Honeyword hits: {{ result_honeyword }}</span>
+  <span class="chip chip-danger">Lockouts: {{ result_lockout }}</span>
+  <span class="chip chip-warn">SQLi probes: {{ result_sqli }}</span>
+  <span class="chip chip-warn">Honeytoken hits: {{ result_honeypot }}</span>
+</div>
+
+<div class="card">
+  <h2>Events &mdash; last 14 days</h2>
+  <canvas id="audit-chart" data-labels='{{ labels|tojson }}' data-values='{{ values|tojson }}' height="140"></canvas>
+</div>
+
+{% if entries %}
+<table class="audit-table">
+  <thead>
+    <tr><th>Time (UTC)</th><th>IP</th><th>User</th><th>Action</th><th>Result</th><th>Detail</th></tr>
+  </thead>
+  <tbody>
+    {% for e in entries %}
+    <tr class="{{ 'alert' if e.result in ['honeyword','lockout','fail','sqli','honeypot'] else '' }}">
+      <td>{{ e.ts }}</td>
+      <td>{{ e.ip }}</td>
+      <td>{{ e.user }}</td>
+      <td>{{ e.action }}</td>
+      <td>{{ e.result }}</td>
+      <td>{{ e.detail }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="auth-sub">No records embedded yet.</p>
+{% endif %}
+
+<div class="action-row">
+  <a class="btn btn-ghost" href="{{ url_for('audit_image') }}">Download cover image</a>
+  <a class="btn btn-ghost" href="{{ url_for('audit_raw') }}">Download extracted JSON</a>
+</div>
+{% endblock %}

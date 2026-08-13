@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Reset password - CipherGuard Store{% endblock %}
+{% block content %}
+<div class="auth-shell">
+  <aside class="auth-side">
+    <div class="auth-side-brand">CipherGuard Store</div>
+    <h2>Security questions are weak &mdash; so we encrypt them.</h2>
+    <p>Course material calls security questions a weak factor. Instead of storing your answer in plaintext, CipherGuard stores a Vigenere or Playfair ciphertext and verifies your answer against that. A leaked database reveals nothing.</p>
+    <ul class="auth-side-list">
+      <li>Answer compared against ciphertext, never plaintext.</li>
+      <li>Three wrong answers locks the reset flow.</li>
+      <li>New password gets a fresh honeyword list and keystroke profile.</li>
+    </ul>
+  </aside>
+  <div class="auth-form">
+    {% if step == 1 %}
+      <h1>Reset password</h1>
+      <p class="auth-sub">Step 1 of 2 &mdash; identify the account.</p>
+      <form method="post" action="{{ url_for('reset') }}">
+        <label class="field">
+          <span>Username</span>
+          <input type="text" name="username" required autofocus>
+        </label>
+        <button type="submit" class="btn btn-primary btn-block">Continue</button>
+      </form>
+    {% else %}
+      <h1>Reset password</h1>
+      <p class="auth-sub">Step 2 of 2 &mdash; answer the challenge (cipher: {{ answer_cipher }}).</p>
+      <div class="question-card">
+        <span class="question-text">{{ question }}</span>
+      </div>
+      <form method="post" action="{{ url_for('reset_verify') }}">
+        <label class="field">
+          <span>Answer</span>
+          <input type="text" name="answer" required autofocus>
+        </label>
+        <label class="field">
+          <span>New password</span>
+          <span class="password-wrap">
+            <input type="password" name="password" id="password" data-holds="holds" data-intervals="intervals" data-strength="meter" required autocomplete="new-password">
+            <button type="button" class="eye" data-toggle-password="password" aria-label="Toggle password visibility">Show</button>
+          </span>
+        </label>
+        <label class="field">
+          <span>Confirm new password</span>
+          <span class="password-wrap">
+            <input type="password" name="confirm" id="confirm" data-holds="holds_confirm" data-intervals="intervals_confirm" required autocomplete="new-password">
+            <button type="button" class="eye" data-toggle-password="confirm" aria-label="Toggle password visibility">Show</button>
+          </span>
+        </label>
+        <input type="hidden" name="holds" id="holds">
+        <input type="hidden" name="intervals" id="intervals">
+        <input type="hidden" name="holds_confirm" id="holds_confirm">
+        <input type="hidden" name="intervals_confirm" id="intervals_confirm">
+
+        <div class="meter"><div class="meter-bar" id="meter-bar"></div></div>
+        <ul id="meter-feedback" class="meter-feedback"></ul>
+
+        <button type="submit" class="btn btn-primary btn-block">Reset password</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

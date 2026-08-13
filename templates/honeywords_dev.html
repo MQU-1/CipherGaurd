@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Honeyword Lab - CipherGuard{% endblock %}
+{% block content %}
+<div class="chip-row">
+  <span class="chip chip-warn">DEV DIAGNOSTIC</span>
+  <span class="chip chip-info">{{ count }} entries</span>
+</div>
+<h1>Honeyword Lab</h1>
+<p class="auth-sub">This page peeks at the <strong>demo user's</strong> password store so you can see honeywords with your own eyes. Every entry below is a salted PBKDF2 hash &mdash; the decoys and the real password are <em>indistinguishable</em> from the stored hashes. This page would never ship in production; it exists only to demonstrate Chapter 3.</p>
+
+<section class="card">
+  <h2>{{ demo }}'s password store</h2>
+  <div class="table-wrap">
+    <table class="audit-table">
+      <thead>
+        <tr><th>#</th><th>Plaintext (dev-only)</th><th>PBKDF2 hash</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr class="{{ 'alert' if not row.is_real else '' }}">
+          <td>{{ row.index }}</td>
+          <td><code>{{ row.word }}</code></td>
+          <td><code class="hash-cell" title="{{ row.hash }}">{{ row.hash[:34] if row.hash else '—' }}…</code></td>
+          <td>
+            {% if row.is_real %}
+              <span class="chip chip-ok">REAL PASSWORD</span>
+            {% else %}
+              <span class="chip">DECOY</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Test a candidate password</h2>
+  <p class="auth-sub">Submit any string and the checker will tell you whether it matches the real password, triggers a honeyword alert, or misses entirely &mdash; exactly what a credential-stuffing bot experiences.</p>
+  <form method="post" class="inline-form">
+    <input type="password" name="password" placeholder="Try a password..." required autocomplete="off">
+    <button class="btn btn-primary" type="submit">Check</button>
+  </form>
+  {% if tested %}
+  <div class="test-result">
+    <code>{{ tested.candidate }}</code>
+    {% if tested.label == "REAL PASSWORD" %}
+      <span class="chip chip-ok">{{ tested.label }}</span>
+    {% elif tested.label == "HONEYWORD TRIGGERED" %}
+      <span class="chip chip-danger">{{ tested.label }}</span>
+    {% else %}
+      <span class="chip chip-info">{{ tested.label }}</span>
+    {% endif %}
+  </div>
+  <p class="auth-sub">A honeyword match is written to the stego audit trail as a <strong>credential-guessing alert</strong> &mdash; and the account is locked after {{ '5' }} failed tries.</p>
+  {% endif %}
+</section>
+{% endblock %}

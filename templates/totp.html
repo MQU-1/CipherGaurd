@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Enable 2FA - CipherGuard Store{% endblock %}
+{% block content %}
+<div class="auth-shell auth-shell-narrow">
+  <div class="auth-form auth-form-center">
+    <h1>Enable two-factor authentication</h1>
+    <p class="auth-sub">Use any authenticator app (Google Authenticator, Aegis, 1Password...). Scan the QR code below, or add the secret manually.</p>
+
+    <div class="totp-card">
+      <img src="{{ qr_data_uri }}" alt="TOTP provisioning QR code" width="220" height="220" style="image-rendering:pixelated;">
+      <button type="button" class="btn btn-ghost" id="copy-secret">Copy secret</button>
+      <code class="totp-secret" id="totp-secret">{{ secret }}</code>
+    </div>
+
+    <form method="post" action="{{ url_for('totp_confirm') }}">
+      <label class="field">
+        <span>6-digit code</span>
+        <input type="text" name="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required autofocus placeholder="000000">
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Verify and enable</button>
+    </form>
+    <div class="auth-links">
+      <a href="{{ url_for('account') }}">Back to account</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var secret = document.getElementById('totp-secret').textContent;
+  document.getElementById('copy-secret').addEventListener('click', function () {
+    var textarea = document.createElement('textarea');
+    textarea.value = secret;
+    document.body.appendChild(textarea);
+    textarea.select();
+    try { document.execCommand('copy'); window.showToast('Secret copied.', 'ok'); } catch (e) {}
+    document.body.removeChild(textarea);
+  });
+})();
+</script>
+{% endblock %}

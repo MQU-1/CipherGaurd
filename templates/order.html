@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Order {{ invoice.order_id }} - CipherGuard Store{% endblock %}
+{% block content %}
+<div class="order-hero">
+  <div class="order-check">OK</div>
+  <h1>Order placed</h1>
+  <p>Order <strong>{{ invoice.order_id }}</strong> on {{ invoice.ts }} &mdash; total <strong>${{ "%.2f"|format(invoice.total) }}</strong></p>
+</div>
+
+<div class="cart-layout">
+  <div class="cart-list">
+    <h2 class="section-title">Items</h2>
+    {% for i in invoice.lines %}
+    <div class="cart-row">
+      <div class="cart-info"><h3>{{ i.name }}</h3></div>
+      <div class="cart-qty"><span class="qty-value">x{{ i.qty }}</span></div>
+      <div class="cart-line">${{ "%.2f"|format(i.price * i.qty) }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  <aside class="cart-summary">
+    <h2>Sealed invoice</h2>
+    <p class="auth-sub">Your invoice was encrypted and hidden inside an image. Below is the sealed envelope &mdash; a stream cipher body plus an HMAC integrity tag. Without the key it reads as noise.</p>
+    <pre class="sealed-box">{{ invoice.sealed }}</pre>
+    <a class="btn btn-primary btn-block" href="{{ url_for('invoice_sealed', order_id=invoice.order_id) }}">Download sealed envelope</a>
+    <a class="btn btn-ghost btn-block" href="{{ url_for('invoices_image') }}">View invoice image</a>
+    <a class="btn btn-ghost btn-block" href="{{ url_for('shop') }}">Continue shopping</a>
+  </aside>
+</div>
+{% endblock %}

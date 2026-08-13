@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Create account - CipherGuard Store{% endblock %}
+{% block content %}
+<div class="auth-shell">
+  <aside class="auth-side">
+    <div class="auth-side-brand">CipherGuard Store</div>
+    <h2>Enroll, and the system learns your rhythm.</h2>
+    <p>On sign-up we build your defense profile:</p>
+    <ul class="auth-side-list">
+      <li>Password strength scored before storage (reject weak ones).</li>
+      <li>19 decoy honeywords generated and hashed alongside the real password.</li>
+      <li>Your typing rhythm captured to create a keystroke biometric profile.</li>
+      <li>Your security answer encrypted with a Vigenere or Playfair cipher.</li>
+      <li>Your avatar hides your username inside its pixels.</li>
+    </ul>
+  </aside>
+  <div class="auth-form">
+    <h1>Create your vault</h1>
+    <p class="auth-sub">Takes about thirty seconds.</p>
+    <form method="post" action="{{ url_for('register') }}">
+      <label class="field">
+        <span>Username</span>
+        <input type="text" name="username" required autofocus autocomplete="username">
+      </label>
+      <label class="field">
+        <span>Password</span>
+        <span class="password-wrap">
+          <input type="password" name="password" id="password" data-holds="holds" data-intervals="intervals" data-strength="meter" required autocomplete="new-password">
+          <button type="button" class="eye" data-toggle-password="password" aria-label="Toggle password visibility">Show</button>
+        </span>
+      </label>
+      <label class="field">
+        <span>Confirm password</span>
+        <span class="password-wrap">
+          <input type="password" name="confirm" id="confirm" data-holds="holds_confirm" data-intervals="intervals_confirm" required autocomplete="new-password">
+          <button type="button" class="eye" data-toggle-password="confirm" aria-label="Toggle password visibility">Show</button>
+        </span>
+      </label>
+      <input type="hidden" name="holds" id="holds">
+      <input type="hidden" name="intervals" id="intervals">
+      <input type="hidden" name="holds_confirm" id="holds_confirm">
+      <input type="hidden" name="intervals_confirm" id="intervals_confirm">
+      <input type="hidden" name="honeypot_email" class="hp-trap" value="" tabindex="-1" autocomplete="off">
+
+      <div class="meter"><div class="meter-bar" id="meter-bar"></div></div>
+      <ul id="meter-feedback" class="meter-feedback"></ul>
+
+      <label class="field">
+        <span>Security question</span>
+        <select name="question" required>
+          <option value="" disabled selected>Choose one</option>
+          <option>What was your first pet's name?</option>
+          <option>What street did you grow up on?</option>
+          <option>What is your mother's maiden name?</option>
+          <option>What was the make of your first car?</option>
+          <option>What is your childhood nickname?</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Answer</span>
+        <input type="text" name="answer" required>
+      </label>
+      <label class="field">
+        <span>Answer cipher</span>
+        <select name="answer_cipher">
+          <option value="vigenere">Vigenere (polyalphabetic)</option>
+          <option value="playfair">Playfair (digraph)</option>
+        </select>
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Create account</button>
+    </form>
+    <div class="auth-links">
+      <a href="{{ url_for('login') }}">Already have an account? Sign in</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
