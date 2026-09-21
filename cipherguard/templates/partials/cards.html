@@ -1,0 +1,57 @@
+{% from "partials/artwork.html" import artwork %}
+
+{% macro product_card(item) %}
+<article class="card">
+  <div class="card__frame">
+    <a href="{{ url_for('storefront.product', slug=item.slug) }}" aria-label="{{ item.name }}">
+      {{ artwork(item.artwork) }}
+    </a>
+    {% if item.featured %}<span class="tag card__flag">Best seller</span>{% endif %}
+    <button class="btn btn--small btn--block card__action" type="button" data-add="{{ item.slug }}">Add to bag</button>
+  </div>
+  <div>
+    <div class="card__meta">
+      <a class="card__name" href="{{ url_for('storefront.product', slug=item.slug) }}">{{ item.name }}</a>
+      <span class="card__price">{{ item.price | money }}</span>
+    </div>
+    <p class="card__tagline">{{ item.tagline }}</p>
+  </div>
+</article>
+{% endmacro %}
+
+{% macro course_row(item) %}
+<article class="course-row">
+  <span class="course-row__code">{{ item.code }}</span>
+  <div>
+    <a class="course-row__title" href="{{ url_for('storefront.course', slug=item.slug) }}">{{ item.name }}</a>
+    <p class="course-row__tagline">{{ item.tagline }}</p>
+  </div>
+  <div class="course-row__facts">
+    <span>{{ item.level }}</span>
+    <span>{{ item.duration }} · {{ item.lesson_count }} lessons</span>
+  </div>
+  <div class="course-row__buy">
+    <span class="numeral">{{ item.price | money }}</span>
+    <button class="btn btn--quiet btn--small" type="button" data-add="{{ item.slug }}">Enrol</button>
+  </div>
+</article>
+{% endmacro %}
+
+{% macro course_card(item) %}
+<article class="card">
+  <div class="card__frame">
+    <a href="{{ url_for('storefront.course', slug=item.slug) }}" style="display:grid;gap:10px;justify-items:center;text-align:center;padding:24px">
+      <span class="mono faint">{{ item.code }}</span>
+      <span class="subhead">{{ item.name }}</span>
+      <span class="eyebrow">{{ item.level }}</span>
+    </a>
+  </div>
+  <div>
+    <div class="card__meta">
+      <a class="card__name" href="{{ url_for('storefront.course', slug=item.slug) }}">{{ item.duration }} · {{ item.lesson_count }} lessons</a>
+      <span class="card__price">{{ item.price | money }}</span>
+    </div>
+    <p class="card__tagline">{{ item.tagline }}</p>
+  </div>
+</article>
+{% endmacro %}

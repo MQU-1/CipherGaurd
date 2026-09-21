@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% from "partials/tags.html" import result_tag %}
+
+{% block title %}Honeyword lab — CipherGuard{% endblock %}
+
+{% block content %}
+<section class="wrap" style="padding-top:44px">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="{{ url_for('account.overview') }}">Account</a>
+    <span>/</span>
+    <span>Honeyword lab</span>
+  </nav>
+
+  <div class="stack stack--tight" style="max-width:680px;margin-top:22px">
+    <span class="eyebrow">Diagnostic</span>
+    <h1 class="headline">Twenty hashes, one of them real.</h1>
+    <p class="lede">
+      The plaintext column exists only for the seeded <span class="mono">{{ lab_account }}</span> account so the idea can
+      be inspected. A real deployment stores the hashes and nothing else.
+    </p>
+  </div>
+
+  <div class="lab-grid">
+    <div class="table__scroll">
+      <table class="table">
+        <thead>
+          <tr><th style="width:52px">#</th><th style="width:180px">Candidate</th><th>PBKDF2-SHA256</th></tr>
+        </thead>
+        <tbody>
+          {% for row in rows %}
+            <tr>
+              <td class="mono faint">{{ "%02d" | format(row.index) }}</td>
+              <td class="mono">{{ row.word }}</td>
+              <td class="digest">{{ row.digest }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <aside class="enroll">
+      <span class="eyebrow">Test a candidate</span>
+      <p class="muted" style="font-size:14px">Submitting runs the same check the sign-in path runs, and writes the outcome to the audit trail.</p>
+
+      <form method="post" action="{{ url_for('account.honeyword_lab') }}" class="stack">
+        <div class="field">
+          <label class="field__label" for="candidate">Candidate password</label>
+          <input class="input mono" id="candidate" name="candidate" autocomplete="off" required>
+        </div>
+        <button class="btn btn--block" type="submit">Check</button>
+      </form>
+
+      {% if tested %}
+        <div class="notice {{ 'notice--good' if tested.verdict == 'real' else ('notice--alert' if tested.verdict == 'decoy' else '') }}">
+          <div>
+            <strong>{{ result_tag(tested.verdict) }}</strong>
+            <p style="margin-top:8px">
+              {% if tested.verdict == 'real' %}
+                That is the live password for this account.
+              {% elif tested.verdict == 'decoy' %}
+                A decoy matched. On the sign-in path this raises a credential-guessing alarm and refuses the login.
+              {% else %}
+                No hash in the store matched that candidate.
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="totals" style="margin-top:4px">
+        <div class="totals__row"><span>Entries</span><span>{{ rows | length }}</span></div>
+        <div class="totals__row"><span>Real index</span><span>hidden from this view</span></div>
+      </div>
+    </aside>
+  </div>
+</section>
+{% endblock %}

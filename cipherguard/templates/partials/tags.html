@@ -1,0 +1,21 @@
+{% macro result_tag(result) %}
+{%- set positive = ('success', 'ok', 'real') -%}
+{%- set negative = ('fail', 'honeyword', 'sqli', 'honeypot', 'lockout', 'decoy') -%}
+{%- if result in positive -%}
+<span class="tag tag--good">{{ result }}</span>
+{%- elif result in negative -%}
+<span class="tag tag--alert">{{ result }}</span>
+{%- else -%}
+<span class="tag tag--watch">{{ result }}</span>
+{%- endif -%}
+{% endmacro %}
+
+{% macro status_tag(status) %}
+{%- if status >= 500 -%}
+<span class="tag tag--alert">{{ status }}</span>
+{%- elif status >= 400 -%}
+<span class="tag tag--watch">{{ status }}</span>
+{%- else -%}
+<span class="tag">{{ status }}</span>
+{%- endif -%}
+{% endmacro %}

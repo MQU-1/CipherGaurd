@@ -1,0 +1,108 @@
+{% macro artwork(key) %}
+{%- if key == 'padlock' -%}
+<svg viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <path d="M38 64V44a22 22 0 0 1 44 0v20"/>
+  <rect x="22" y="64" width="76" height="62" rx="6"/>
+  <circle cx="60" cy="88" r="7"/>
+  <path d="M60 95v13"/>
+  <path d="M22 110h76" stroke-dasharray="3 6" opacity=".4"/>
+</svg>
+{%- elif key == 'safe' -%}
+<svg viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <rect x="16" y="34" width="88" height="86" rx="4"/>
+  <rect x="26" y="44" width="60" height="66" rx="2" opacity=".45"/>
+  <circle cx="56" cy="77" r="16"/>
+  <circle cx="56" cy="77" r="3.4" fill="currentColor" stroke="none"/>
+  <path d="M56 61v-5M56 93v5M40 77h-5M72 77h5"/>
+  <path d="M94 66v22"/>
+  <path d="M24 120v8M96 120v8"/>
+</svg>
+{%- elif key == 'box' -%}
+<svg viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <rect x="44" y="30" width="32" height="12" rx="3" opacity=".5"/>
+  <rect x="16" y="46" width="88" height="66" rx="3"/>
+  <path d="M16 64h88"/>
+  <circle cx="60" cy="88" r="13"/>
+  <path d="M60 75v5M60 96v5M47 88h5M68 88h5" opacity=".6"/>
+  <path d="M28 56h10M82 56h10" opacity=".4"/>
+</svg>
+{%- elif key == 'watch' -%}
+<svg viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <path d="M45 47l3-17h24l3 17M45 103l3 17h24l3-17"/>
+  <circle cx="60" cy="75" r="30"/>
+  <rect x="46" y="66" width="28" height="18" rx="2"/>
+  <path d="M52 75h6M62 75h6" opacity=".55"/>
+  <circle cx="60" cy="75" r="38" stroke-dasharray="2 7" opacity=".3"/>
+  <path d="M90 70v10" opacity=".7"/>
+</svg>
+{%- elif key == 'sleeve' -%}
+<svg viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <path d="M28 56h64a4 4 0 0 1 4 4v56a6 6 0 0 1-6 6H30a6 6 0 0 1-6-6V60a4 4 0 0 1 4-4z"/>
+  <path d="M24 68h72"/>
+  <path d="M48 92h24"/>
+  <path d="M44 44c8-7 24-7 32 0" opacity=".55"/>
+  <path d="M36 33c13-11 35-11 48 0" opacity=".3"/>
+</svg>
+{%- elif key == 'frame' -%}
+<svg viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <rect x="18" y="26" width="84" height="94" rx="2"/>
+  <rect x="28" y="36" width="64" height="74" rx="1" opacity=".45"/>
+  <path d="M28 98l16-19 12 13 14-19 22 27"/>
+  <circle cx="46" cy="56" r="5"/>
+  <path d="M34 128h6M46 128h6M58 128h6M70 128h6" opacity=".45"/>
+</svg>
+{%- elif key == 'wheel' -%}
+<svg viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <circle cx="60" cy="75" r="42"/>
+  <circle cx="60" cy="75" r="28" opacity=".5"/>
+  <circle cx="60" cy="75" r="3" fill="currentColor" stroke="none"/>
+  <path d="M60 33v9M60 117v-9M18 75h9M102 75h-9"/>
+  <path d="M90 45l-7 7M30 105l7-7M90 105l-7-7M30 45l7 7" opacity=".45"/>
+  <path d="M60 47l4.5 8h-9z" fill="currentColor" stroke="none" opacity=".75"/>
+</svg>
+{%- elif key == 'dice' -%}
+<svg viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <rect x="54" y="34" width="48" height="48" rx="8" opacity=".5"/>
+  <rect x="18" y="60" width="56" height="56" rx="9"/>
+  <circle cx="34" cy="76" r="3.2" fill="currentColor" stroke="none"/>
+  <circle cx="58" cy="100" r="3.2" fill="currentColor" stroke="none"/>
+  <circle cx="46" cy="88" r="3.2" fill="currentColor" stroke="none"/>
+  <circle cx="70" cy="50" r="2.8" fill="currentColor" stroke="none" opacity=".6"/>
+  <circle cx="86" cy="66" r="2.8" fill="currentColor" stroke="none" opacity=".6"/>
+</svg>
+{%- else -%}
+<svg viewBox="0 0 120 150" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <rect x="22" y="40" width="76" height="70" rx="3"/>
+  <path d="M22 60h76M46 40v20" opacity=".5"/>
+</svg>
+{%- endif -%}
+{% endmacro %}
+
+{% macro glyph() %}
+<svg class="brand__glyph" viewBox="0 0 20 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">
+  <path d="M10 1.2l8.2 3v8.2c0 5-3.4 8.9-8.2 10.4C5.2 21.3 1.8 17.4 1.8 12.4V4.2z"/>
+  <circle cx="10" cy="10.6" r="2.2"/>
+  <path d="M10 12.8v3.4" stroke-linecap="round"/>
+</svg>
+{% endmacro %}
+
+{% macro icon(name) %}
+{%- if name == 'search' -%}
+<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+  <circle cx="9" cy="9" r="6"/><path d="M13.5 13.5L17.5 17.5"/>
+</svg>
+{%- elif name == 'bag' -%}
+<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">
+  <path d="M3.6 6.5h12.8l.9 10.4a.9.9 0 0 1-.9 1H3.6a.9.9 0 0 1-.9-1z"/>
+  <path d="M7 8.4V5.6a3 3 0 0 1 6 0v2.8" stroke-linecap="round"/>
+</svg>
+{%- elif name == 'user' -%}
+<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+  <circle cx="10" cy="7" r="3.2"/><path d="M4 17c.8-3.3 3.1-5 6-5s5.2 1.7 6 5"/>
+</svg>
+{%- elif name == 'arrow' -%}
+<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <path d="M4 10h12M11 5l5 5-5 5"/>
+</svg>
+{%- endif -%}
+{% endmacro %}

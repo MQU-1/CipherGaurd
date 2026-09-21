@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Not found — CipherGuard{% endblock %}
+
+{% block content %}
+<section class="wrap error-page">
+  <span class="eyebrow">404</span>
+  <h1 class="display">That page is not here.</h1>
+  <p class="lede" style="text-align:center">The link may be old, or the item may have left the range.</p>
+  <div class="row" style="gap:12px">
+    <a class="btn" href="{{ url_for('storefront.shop') }}">Shop hardware</a>
+    <a class="btn btn--ghost" href="{{ url_for('storefront.courses') }}">Browse courses</a>
+  </div>
+</section>
+{% endblock %}

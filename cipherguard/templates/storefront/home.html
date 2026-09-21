@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% from "partials/cards.html" import product_card, course_row %}
+{% from "partials/artwork.html" import artwork %}
+
+{% block title %}CipherGuard — security hardware and courses{% endblock %}
+{% block description %}Locks, authenticators and short courses for people who would rather not be the next breach headline.{% endblock %}
+
+{% block content %}
+<section class="wrap">
+  <div class="hero">
+    <div class="hero__body">
+      <span class="eyebrow">Hardware and courses</span>
+      <h1 class="display">Security you can hold, and the reasoning behind it.</h1>
+      <p class="lede">
+        We build the locks, watches and safes we wanted for ourselves, then teach the thinking that goes into them.
+        Every account on this store runs the same layered sign-in we write about.
+      </p>
+      <div class="hero__actions">
+        <a class="btn" href="{{ url_for('storefront.shop') }}">Shop hardware</a>
+        <a class="btn btn--ghost" href="{{ url_for('storefront.courses') }}">Browse courses</a>
+      </div>
+      <div class="hero__meta">
+        <span>Free delivery over {{ config.FREE_SHIPPING_THRESHOLD | money }}</span>
+        <span>30-day returns</span>
+        <span>Lifetime course access</span>
+      </div>
+    </div>
+    <div class="hero__art">{{ artwork('padlock') }}</div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="marquee">
+    <div>
+      <span class="eyebrow">Built in the open</span>
+      <p>Mechanisms are documented down to the tolerance. No mystery firmware.</p>
+    </div>
+    <div>
+      <span class="eyebrow">Taught by practitioners</span>
+      <p>Courses are written by the people who maintain the systems they describe.</p>
+    </div>
+    <div>
+      <span class="eyebrow">Sealed invoices</span>
+      <p>Every order is authenticated and hidden inside an image carrier.</p>
+    </div>
+    <div>
+      <span class="eyebrow">Layered accounts</span>
+      <p>Honeywords, typing rhythm and rolling codes guard your sign-in.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap">
+  <div class="section-head">
+    <div>
+      <h2 class="headline">This season</h2>
+      <p>Four pieces that cover the ground most people are missing: a lock, a safe, a second factor and a signal blocker.</p>
+    </div>
+    <a class="link" href="{{ url_for('storefront.shop') }}">All hardware</a>
+  </div>
+  <div class="grid">
+    {% for item in products %}{{ product_card(item) }}{% endfor %}
+  </div>
+</section>
+
+<section class="section section--canvas">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2 class="headline">Courses</h2>
+        <p>Short, specific and built around a lab. Enrol once, keep the material.</p>
+      </div>
+      <a class="link" href="{{ url_for('storefront.courses') }}">Full catalogue</a>
+    </div>
+    {% for item in courses %}{{ course_row(item) }}{% endfor %}
+  </div>
+</section>
+
+<section class="section wrap">
+  <div class="hero" style="padding-bottom:0">
+    <div class="hero__body">
+      <span class="eyebrow">Inside the store</span>
+      <h2 class="headline">Your account is the demonstration.</h2>
+      <p class="lede">
+        Passwords sit in a honeyword list where nineteen decoys look exactly like the real hash. Your typing rhythm is
+        measured at enrolment and compared on every sign-in. Orders are sealed with a message authentication code and
+        embedded in the pixels of a carrier image.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--ghost" href="{{ url_for('storefront.security') }}">Read how it works</a>
+      </div>
+    </div>
+    <div class="hero__art">{{ artwork('frame') }}</div>
+  </div>
+</section>
+{% endblock %}

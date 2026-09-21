@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Two-factor — CipherGuard{% endblock %}
+
+{% block content %}
+<section class="wrap" style="padding-block:44px 96px">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="{{ url_for('account.overview') }}">Account</a>
+    <span>/</span>
+    <span>Two-factor</span>
+  </nav>
+
+  {% if enabled %}
+    <div class="stack stack--loose" style="max-width:620px;margin-top:26px">
+      <div class="stack stack--tight">
+        <span class="eyebrow">Two-factor</span>
+        <h1 class="headline">Two-factor is on.</h1>
+        <p class="lede">Every sign-in for {{ username }} asks for a six-digit code after the password and rhythm checks pass.</p>
+      </div>
+
+      <div class="notice notice--good">
+        <div><strong>Codes rotate every 30 seconds.</strong> Verification allows one step either side to absorb clock drift.</div>
+      </div>
+
+      <form method="post" action="{{ url_for('account.disable_two_factor') }}">
+        <button class="btn btn--danger" type="submit">Turn off two-factor</button>
+      </form>
+    </div>
+  {% else %}
+    <div class="lab-grid" style="padding-top:26px">
+      <div class="stack stack--loose">
+        <div class="stack stack--tight">
+          <span class="eyebrow">Two-factor</span>
+          <h1 class="headline">Add a rolling code.</h1>
+          <p class="lede">Scan the square with any authenticator app, then confirm one code so we know the clocks agree.</p>
+        </div>
+
+        <div class="row row--wrap" style="gap:32px;align-items:flex-start">
+          <img src="{{ qr }}" alt="Provisioning QR code" width="180" height="180" style="border:1px solid var(--line)">
+          <details class="stack">
+            <summary style="cursor:pointer">Can't scan? Reveal the manual entry key</summary>
+            <div class="field">
+              <span class="field__label">Manual entry key</span>
+              <p class="mono" style="word-break:break-all;font-size:13px">{{ secret }}</p>
+              <span class="field__hint">Anyone who reads this can generate your codes. Keep it off screen once entered.</span>
+            </div>
+          </details>
+        </div>
+
+        <form class="auth__form" method="post" action="{{ url_for('account.enable_two_factor') }}" style="max-width:320px">
+          <div class="field">
+            <label class="field__label" for="code">Confirm a code</label>
+            <input class="input mono" id="code" name="code" inputmode="numeric" pattern="[0-9]*" maxlength="6"
+                   autocomplete="one-time-code" style="letter-spacing:0.3em;text-align:center" required>
+          </div>
+          <button class="btn btn--block" type="submit">Enable two-factor</button>
+        </form>
+      </div>
+
+      <aside class="enroll">
+        <span class="eyebrow">Why bother</span>
+        <p class="muted" style="font-size:14px">
+          A stolen password is worthless without the device holding the shared secret. Enrolling also removes ten points
+          of risk from every future sign-in score.
+        </p>
+        <p class="muted" style="font-size:14px">
+          The secret is generated here, shown once and stored with your account record. Nothing leaves the machine
+          running this store.
+        </p>
+      </aside>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

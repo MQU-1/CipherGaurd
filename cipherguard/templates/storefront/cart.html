@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% from "partials/artwork.html" import artwork %}
+
+{% block title %}Your bag — CipherGuard{% endblock %}
+
+{% block content %}
+<section class="wrap" data-cart-page>
+  {% if totals.lines %}
+    <div class="bag">
+      <div>
+        <div class="row row--between" style="padding-bottom:24px">
+          <h1 class="headline">Your bag</h1>
+          <span class="faint">{{ totals.count }} item{{ '' if totals.count == 1 else 's' }}</span>
+        </div>
+
+        {% for row in totals.lines %}
+          <div class="bag__row">
+            <div class="bag__thumb">
+              {% if row.item.kind == 'course' %}
+                <span class="mono faint">{{ row.item.code }}</span>
+              {% else %}
+                {{ artwork(row.item.artwork) }}
+              {% endif %}
+            </div>
+
+            <div class="stack stack--tight">
+              <a class="subhead" href="{{ url_for('storefront.course', slug=row.item.slug) if row.item.kind == 'course' else url_for('storefront.product', slug=row.item.slug) }}">{{ row.item.name }}</a>
+              <p class="muted" style="font-size:13.5px">{{ row.item.tagline }}</p>
+              <div class="row" style="margin-top:10px;gap:16px">
+                {% if row.item.kind == 'course' %}
+                  <span class="tag">Single seat</span>
+                {% else %}
+                  <div class="stepper" data-slug="{{ row.item.slug }}" data-quantity="{{ row.quantity }}">
+                    <button type="button" data-step="-1" aria-label="Decrease quantity">&minus;</button>
+                    <output>{{ row.quantity }}</output>
+                    <button type="button" data-step="1" aria-label="Increase quantity">+</button>
+                  </div>
+                {% endif %}
+                <button class="line-item__remove" type="button" data-remove="{{ row.item.slug }}">Remove</button>
+              </div>
+            </div>
+
+            <div class="line-item__price">{{ row.subtotal | money }}</div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <aside class="bag__summary">
+        <span class="eyebrow">Summary</span>
+        <div class="totals">
+          <div class="totals__row"><span>Subtotal</span><span>{{ totals.subtotal | money }}</span></div>
+          <div class="totals__row">
+            <span>Delivery</span>
+            <span>{% if not totals.shippable %}Digital{% elif totals.shipping %}{{ totals.shipping | money }}{% else %}Free{% endif %}</span>
+          </div>
+          <div class="totals__row totals__row--final"><span>Total</span><span>{{ totals.total | money }}</span></div>
+        </div>
+
+        {% if totals.free_shipping_gap %}
+          <p class="faint" style="font-size:13px">Add {{ totals.free_shipping_gap | money }} for free delivery.</p>
+        {% endif %}
+
+        <a class="btn btn--block" href="{{ url_for('storefront.checkout') }}">Checkout</a>
+        <a class="link faint" style="font-size:13px;text-align:center" href="{{ url_for('storefront.shop') }}">Continue shopping</a>
+      </aside>
+    </div>
+  {% else %}
+    <div class="bag__empty">
+      <span class="eyebrow">Your bag</span>
+      <h1 class="headline">Nothing in here yet.</h1>
+      <p class="lede" style="text-align:center">Start with the hardware range, or pick up a course and keep it for good.</p>
+      <div class="row" style="gap:12px">
+        <a class="btn" href="{{ url_for('storefront.shop') }}">Shop hardware</a>
+        <a class="btn btn--ghost" href="{{ url_for('storefront.courses') }}">Browse courses</a>
+      </div>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

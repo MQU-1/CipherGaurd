@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% from "partials/cards.html" import course_row %}
+
+{% block title %}{{ item.code }} {{ item.name }} — CipherGuard{% endblock %}
+{% block description %}{{ item.tagline }}{% endblock %}
+
+{% block content %}
+<section class="course-hero">
+  <div class="wrap course-hero__grid">
+    <div class="stack">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="{{ url_for('storefront.courses') }}">Courses</a>
+        <span>/</span>
+        <span>{{ item.code }}</span>
+      </nav>
+      <h1 class="display" style="font-size:clamp(2rem,1.4rem+2vw,3rem)">{{ item.name }}</h1>
+      <p class="lede">{{ item.tagline }}</p>
+      <div class="course-hero__facts">
+        <span>{{ item.level }}</span>
+        <span>{{ item.duration }}</span>
+        <span>{{ item.lesson_count }} lessons</span>
+        <span>{{ item.enrolled | thousands }} enrolled</span>
+      </div>
+    </div>
+    <div class="stack">
+      <span class="eyebrow">Taught by</span>
+      <p class="subhead">{{ item.instructor }}</p>
+      <p class="muted" style="font-size:14px">Course code {{ item.code }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap course-body">
+  <div class="stack stack--loose">
+    <div class="stack">
+      <h2 class="headline">About this course</h2>
+      <p class="lede" style="max-width:64ch">{{ item.description }}</p>
+    </div>
+
+    <div class="stack">
+      <h3 class="subhead">What you will be able to do</h3>
+      <ul class="checklist">
+        {% for outcome in item.outcomes %}<li>{{ outcome }}</li>{% endfor %}
+      </ul>
+    </div>
+
+    <div class="stack">
+      <h3 class="subhead">Syllabus</h3>
+      <ol class="syllabus">
+        {% for title, length in item.lessons %}
+          <li>
+            <span class="syllabus__index">{{ "%02d" | format(loop.index) }}</span>
+            <span style="flex:1">{{ title }}</span>
+            <span class="syllabus__time">{{ length }}</span>
+          </li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+
+  <aside class="enroll">
+    <span class="eyebrow">Enrolment</span>
+    <span class="enroll__price">{{ item.price | money }}</span>
+    <p class="muted" style="font-size:14px">One payment. Lifetime access to the material and every future revision.</p>
+    <button class="btn btn--block" type="button" data-add="{{ item.slug }}">Add to bag</button>
+    <button class="btn btn--ghost btn--block" type="button" data-add="{{ item.slug }}" data-then="checkout">Enrol now</button>
+    <div class="totals" style="margin-top:6px">
+      <div class="totals__row"><span>Level</span><span>{{ item.level }}</span></div>
+      <div class="totals__row"><span>Length</span><span>{{ item.duration }}</span></div>
+      <div class="totals__row"><span>Lessons</span><span>{{ item.lesson_count }}</span></div>
+    </div>
+  </aside>
+</section>
+
+<section class="section section--canvas">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="headline">Continue with</h2>
+      <a class="link" href="{{ url_for('storefront.courses') }}">All courses</a>
+    </div>
+    {% for other in suggestions %}{{ course_row(other) }}{% endfor %}
+  </div>
+</section>
+{% endblock %}

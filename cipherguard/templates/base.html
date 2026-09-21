@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" data-currency="{{ config.CURRENCY }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}CipherGuard{% endblock %}</title>
+  <meta name="description" content="{% block description %}Security hardware and courses from CipherGuard.{% endblock %}">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 24'%3E%3Cg fill='none' stroke='%23191817' stroke-width='1.8'%3E%3Cpath d='M10 1.4l8 2.9v8.1c0 4.9-3.3 8.7-8 10.2-4.7-1.5-8-5.3-8-10.2V4.3z'/%3E%3Ccircle cx='10' cy='10.6' r='2.1'/%3E%3Cpath d='M10 12.7v3.4'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pages.css') }}">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  {% include "partials/masthead.html" %}
+
+  <div class="toasts" id="toasts">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="toast toast--{{ category }}" role="status">
+          <span>{{ message }}</span>
+          <button type="button" aria-label="Dismiss">&times;</button>
+        </div>
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include "partials/footer.html" %}
+  {% include "partials/drawer.html" %}
+
+  <script src="{{ url_for('static', filename='js/store.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/keystroke.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/password-strength.js') }}" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

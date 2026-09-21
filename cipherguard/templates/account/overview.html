@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% from "partials/tags.html" import result_tag %}
+
+{% block title %}Your account — CipherGuard{% endblock %}
+
+{% block content %}
+<section class="wrap dashboard">
+  <aside class="dashboard__side">
+    <div class="dashboard__identity">
+      <img class="avatar" src="{{ url_for('storefront.avatar', username=username) }}" alt="" width="40" height="40">
+      <div>
+        <div style="font-weight:500">{{ username }}</div>
+        <div class="faint" style="font-size:12.5px">Joined {{ record.created | day }}</div>
+      </div>
+    </div>
+
+    <nav class="dashboard__menu" aria-label="Account">
+      <a href="{{ url_for('account.overview') }}" aria-current="page">Overview</a>
+      <a href="{{ url_for('storefront.orders') }}">Orders ({{ order_count }})</a>
+      <a href="{{ url_for('account.two_factor') }}">Two-factor</a>
+      <a href="{{ url_for('account.honeyword_lab') }}">Honeyword lab</a>
+      {% if is_admin %}<a href="{{ url_for('admin.audit') }}">Audit trail</a>{% endif %}
+      {% if is_admin %}<a href="{{ url_for('admin.traffic_log') }}">Request log</a>{% endif %}
+      <a href="{{ url_for('auth.logout') }}">Sign out</a>
+    </nav>
+  </aside>
+
+  <div class="dashboard__main">
+    <div class="stack stack--tight">
+      <span class="eyebrow">Account</span>
+      <h1 class="headline">Hello, {{ username }}.</h1>
+    </div>
+
+    {% if session.get('anomaly') %}
+      <div class="notice notice--watch">
+        <div>
+          <strong>This session was scored {{ session.get('risk') }} out of 100.</strong>
+          {{ (session.get('risk_signals') or []) | join('. ') }}.
+        </div>
+      </div>
+    {% else %}
+      <div class="notice notice--good">
+        <div>
+          <strong>Session risk {{ session.get('risk', 0) }} out of 100.</strong>
+          {{ (session.get('risk_signals') or ['Nothing unusual about this sign-in']) | join('. ') }}.
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="score">
+      <span class="eyebrow">Account hardening</span>
+      <div class="row row--between" style="align-items:flex-end">
+        <span class="score__value">{{ score }}<span class="faint" style="font-size:1rem"> / 100</span></span>
+        <span class="faint" style="font-size:13px">{{ 'Fully hardened' if score >= 90 else 'Room to improve' }}</span>
+      </div>
+      <div class="score__track"><div class="score__fill" style="width:{{ score }}%"></div></div>
+    </div>
+
+    <div>
+      <div class="section-head" style="margin-bottom:0;padding-bottom:14px">
+        <h2 class="subhead">Protection in place</h2>
+        {% if not record.totp.enabled %}
+          <a class="btn btn--quiet btn--small" href="{{ url_for('account.two_factor') }}">Turn on two-factor</a>
+        {% endif %}
+      </div>
+      <ul class="posture">
+        {% for check in checks %}
+          <li>
+            <div>
+              <div style="font-weight:500">{{ check.label }}</div>
+              <p>{{ check.detail }}</p>
+            </div>
+            <span class="tag {{ 'tag--good' if check.earned else '' }}">{{ '+' ~ check.points if check.earned else 'not set' }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div>
+      <div class="section-head" style="margin-bottom:0;padding-bottom:14px">
+        <h2 class="subhead">Recent activity</h2>
+        <span class="faint" style="font-size:13px">Read from the carrier image</span>
+      </div>
+      {% if recent %}
+        <div class="table__scroll">
+          <table class="table">
+            <thead>
+              <tr><th>When</th><th>Action</th><th>Result</th><th>Detail</th></tr>
+            </thead>
+            <tbody>
+              {% for entry in recent %}
+                <tr>
+                  <td class="numeral faint" style="white-space:nowrap">{{ entry.ts | moment }}</td>
+                  <td>{{ entry.action }}</td>
+                  <td>{{ result_tag(entry.result) }}</td>
+                  <td class="muted">{{ entry.detail }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="muted">Nothing recorded for this account yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

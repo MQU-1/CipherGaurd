@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% from "partials/tags.html" import status_tag %}
+
+{% block title %}Request log — CipherGuard{% endblock %}
+
+{% block content %}
+<section class="wrap">
+  <div class="admin-head">
+    <div class="stack stack--tight">
+      <span class="eyebrow">Operations</span>
+      <h1 class="headline">Request log</h1>
+      <p class="muted">Plain JSON, capped at the {{ config.TRAFFIC_LIMIT }} most recent requests. Security events live in the audit carrier instead.</p>
+    </div>
+    <div class="row" style="gap:10px">
+      <a class="btn btn--quiet btn--small" href="{{ url_for('admin.audit') }}">Audit trail</a>
+      <a class="btn btn--quiet btn--small" href="{{ url_for('admin.traffic_entries') }}">JSON</a>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="stat">
+      <div class="stat__value">{{ total }}</div>
+      <div class="stat__label">Requests</div>
+    </div>
+    <div class="stat">
+      <div class="stat__value">{{ signin_count }}</div>
+      <div class="stat__label">Sign-in attempts</div>
+    </div>
+    <div class="stat">
+      <div class="stat__value">{{ error_count }}</div>
+      <div class="stat__label">4xx and 5xx</div>
+    </div>
+    <div class="stat">
+      <div class="stat__value">{{ unique_addresses }}</div>
+      <div class="stat__label">Unique addresses</div>
+    </div>
+  </div>
+
+  <form class="filter-bar" method="get" action="{{ url_for('admin.traffic_log') }}">
+    <label class="visually-hidden" for="q">Filter</label>
+    <input class="input" id="q" name="q" value="{{ term }}" placeholder="Filter by path, address, account or agent">
+    <button class="btn btn--quiet btn--small" type="submit">Filter</button>
+    {% if term %}
+      <a class="link faint" style="font-size:13px" href="{{ url_for('admin.traffic_log') }}">Clear</a>
+      <span class="faint" style="font-size:13px">{{ matched }} of {{ total }} match</span>
+    {% endif %}
+  </form>
+
+  <div class="admin-grid" style="padding-top:8px">
+    <div>
+      <h2 class="subhead" style="margin-bottom:16px">Sign-in and recovery attempts</h2>
+      <div class="table__scroll">
+        <table class="table">
+          <thead>
+            <tr><th>When</th><th>Address</th><th>Path</th><th>Status</th><th>Account</th></tr>
+          </thead>
+          <tbody>
+            {% for entry in signins %}
+              <tr>
+                <td class="numeral faint" style="white-space:nowrap">{{ entry.ts | moment }}</td>
+                <td class="mono faint">{{ entry.ip }}</td>
+                <td class="mono">{{ entry.path }}</td>
+                <td>{{ status_tag(entry.status) }}</td>
+                <td>{{ entry.user }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% if not signins %}<p class="muted" style="padding:30px 0">No sign-in attempts recorded yet.</p>{% endif %}
+    </div>
+
+    <div>
+      <h2 class="subhead">Busiest paths</h2>
+      <ul class="posture" style="margin-top:16px">
+        {% for path, count in popular %}
+          <li>
+            <div class="mono" style="font-size:13px">{{ path }}</div>
+            <span class="tag">{{ count }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div style="padding-bottom:90px">
+    <h2 class="subhead" style="margin-bottom:16px">Requests</h2>
+    <div class="table__scroll">
+      <table class="table">
+        <thead>
+          <tr><th>When</th><th>Address</th><th>Method</th><th>Path</th><th>Status</th><th>Account</th><th>Agent</th></tr>
+        </thead>
+        <tbody>
+          {% for entry in entries %}
+            <tr>
+              <td class="numeral faint" style="white-space:nowrap">{{ entry.ts | moment }}</td>
+              <td class="mono faint">{{ entry.ip }}</td>
+              <td>{{ entry.method }}</td>
+              <td class="mono">{{ entry.path }}</td>
+              <td>{{ status_tag(entry.status) }}</td>
+              <td>{{ entry.user }}</td>
+              <td class="faint" style="max-width:280px">{{ entry.agent }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

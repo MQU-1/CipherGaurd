@@ -3,15 +3,13 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Runtime data (recreated on first run)
 data/
 
-# Virtual environments
+.pytest_cache/
 venv/
 .venv/
 env/
 
-# OS/editor files
 .DS_Store
 Thumbs.db
 .idea/

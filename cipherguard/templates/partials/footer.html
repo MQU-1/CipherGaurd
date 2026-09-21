@@ -1,0 +1,58 @@
+{% from "partials/artwork.html" import glyph %}
+
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="site-foot__grid">
+      <div>
+        <a class="brand" href="{{ url_for('storefront.home') }}">
+          {{ glyph() }}
+          <span class="brand__word">CipherGuard</span>
+        </a>
+        <p class="muted" style="margin-top:16px;max-width:34ch;font-size:14px">
+          Hardware and courses for people who would rather not be the next breach headline.
+        </p>
+      </div>
+
+      <div>
+        <h4>Shop</h4>
+        <ul>
+          {% for name in categories %}
+            <li><a href="{{ url_for('storefront.shop', category=name) }}">{{ name }}</a></li>
+          {% endfor %}
+          <li><a href="{{ url_for('storefront.shop') }}">Everything</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          {% for name in levels %}
+            <li><a href="{{ url_for('storefront.courses', level=name) }}">{{ name }} courses</a></li>
+          {% endfor %}
+          <li><a href="{{ url_for('storefront.security') }}">How we protect you</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Account</h4>
+        <ul>
+          {% if current_username %}
+            <li><a href="{{ url_for('account.overview') }}">Your account</a></li>
+            <li><a href="{{ url_for('storefront.orders') }}">Orders</a></li>
+            <li><a href="{{ url_for('account.two_factor') }}">Two-factor</a></li>
+            <li><a href="{{ url_for('account.honeyword_lab') }}">Honeyword lab</a></li>
+          {% else %}
+            <li><a href="{{ url_for('auth.login') }}">Sign in</a></li>
+            <li><a href="{{ url_for('auth.register') }}">Create account</a></li>
+            <li><a href="{{ url_for('auth.reset') }}">Reset password</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-foot__base">
+      <span>&copy; {{ year }} CipherGuard. Coursework demonstration, not a trading company.</span>
+      <span>Audit records and invoices are stored inside image carriers, not plaintext logs.</span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Orders — CipherGuard{% endblock %}
+
+{% block content %}
+<section class="wrap" style="padding-block:44px 90px">
+  <div class="stack" style="max-width:600px">
+    <span class="eyebrow">Orders</span>
+    <h1 class="headline">Everything you have bought.</h1>
+    <p class="lede">Each record is read back out of the invoice carrier image at the moment you open this page.</p>
+  </div>
+
+  {% if orders %}
+    <div class="table__scroll" style="margin-top:38px">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Placed</th>
+            <th>Items</th>
+            <th style="text-align:right">Total</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for invoice in orders %}
+            <tr>
+              <td class="mono">{{ invoice.order_id }}</td>
+              <td>{{ invoice.ts | moment }}</td>
+              <td>{{ invoice.lines | map(attribute='quantity') | sum }}</td>
+              <td class="numeral" style="text-align:right">{{ invoice.total | money }}</td>
+              <td style="text-align:right"><a class="link" href="{{ url_for('storefront.order', order_id=invoice.order_id) }}">Open</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="bag__empty">
+      <p class="lede" style="text-align:center">No orders yet.</p>
+      <a class="btn" href="{{ url_for('storefront.shop') }}">Shop hardware</a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

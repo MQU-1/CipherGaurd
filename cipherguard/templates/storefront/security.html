@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% from "partials/artwork.html" import artwork %}
+
+{% block title %}How we protect your account — CipherGuard{% endblock %}
+
+{% block content %}
+<section class="wrap">
+  <div class="hero">
+    <div class="hero__body">
+      <span class="eyebrow">How we protect you</span>
+      <h1 class="display">Six layers, each one useless on its own.</h1>
+      <p class="lede">
+        A password is a single point of failure. The account you create here runs through six independent checks, and
+        every one of them writes to an audit trail that is hidden inside an image rather than a log file.
+      </p>
+    </div>
+    <div class="hero__art">{{ artwork('safe') }}</div>
+  </div>
+</section>
+
+<section class="section wrap">
+  <div class="section-head">
+    <h2 class="headline">The sign-in path</h2>
+  </div>
+
+  <ol class="layered" style="max-width:760px">
+    <li>
+      <span>01</span>
+      <div>
+        <b>Stretched password hashes</b>
+        Nothing is stored in the clear. Each password is salted and run through PBKDF2-SHA256 so a stolen file is
+        expensive rather than instant.
+      </div>
+    </li>
+    <li>
+      <span>02</span>
+      <div>
+        <b>Honeywords</b>
+        Alongside the real hash sit nineteen decoys. Cracking the file gives an attacker twenty candidates with no way
+        to rank them, and using a decoy raises an alarm instead of opening the account.
+      </div>
+    </li>
+    <li>
+      <span>03</span>
+      <div>
+        <b>Keystroke rhythm</b>
+        Hold times and gaps between keys are captured at enrolment. A sign-in that types nothing like the profile is
+        still allowed through, but it is scored as risky and recorded as such.
+      </div>
+    </li>
+    <li>
+      <span>04</span>
+      <div>
+        <b>Time-based codes</b>
+        Optional but recommended: RFC 6238 codes from any authenticator app, verified with a one-step window either
+        side to allow for clock drift.
+      </div>
+    </li>
+    <li>
+      <span>05</span>
+      <div>
+        <b>Lockout</b>
+        Five consecutive failures freeze the account for five minutes. Credential stuffing gets nowhere, and the
+        response is identical whether or not the username exists.
+      </div>
+    </li>
+    <li>
+      <span>06</span>
+      <div>
+        <b>Encrypted recovery</b>
+        The answer to your recovery question is enciphered with a Vigenère or Playfair key derived from a per-account
+        salt, so the stored value is never the answer itself.
+      </div>
+    </li>
+  </ol>
+</section>
+
+<section class="section section--canvas">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <h2 class="headline">Where the records live</h2>
+        <p>Two carriers, both images, both tamper-evident.</p>
+      </div>
+    </div>
+    <div class="marquee" style="border:0">
+      <div>
+        <span class="eyebrow">Audit trail</span>
+        <p>Sign-ins, decoy hits, lockouts, injection probes and checkouts are appended to the least significant bits of
+          a carrier image. Edit the image and the payload stops parsing.</p>
+      </div>
+      <div>
+        <span class="eyebrow">Sealed invoices</span>
+        <p>Each order is serialised, encrypted with a keystream and stamped with an HMAC before it is embedded. The
+          order page reports whether the seal still verifies.</p>
+      </div>
+      <div>
+        <span class="eyebrow">Injection honeypot</span>
+        <p>Search terms that look like SQL are compiled into a query that is displayed and then discarded, while the
+          attempt is written to the audit trail.</p>
+      </div>
+      <div>
+        <span class="eyebrow">Request log</span>
+        <p>Method, path, status, address and user agent for every request, kept as plain JSON because volume matters
+          more than secrecy there.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

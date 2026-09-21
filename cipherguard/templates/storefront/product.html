@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% from "partials/artwork.html" import artwork %}
+{% from "partials/cards.html" import product_card %}
+
+{% block title %}{{ item.name }} — CipherGuard{% endblock %}
+{% block description %}{{ item.tagline }}{% endblock %}
+
+{% block content %}
+<section class="wrap">
+  <nav class="breadcrumb" style="padding-top:26px" aria-label="Breadcrumb">
+    <a href="{{ url_for('storefront.shop') }}">Hardware</a>
+    <span>/</span>
+    <a href="{{ url_for('storefront.shop', category=item.category) }}">{{ item.category }}</a>
+    <span>/</span>
+    <span>{{ item.name }}</span>
+  </nav>
+
+  <div class="detail">
+    <div class="detail__media">
+      <div class="detail__frame">{{ artwork(item.artwork) }}</div>
+      <div class="detail__strip">
+        <div>{{ artwork(item.artwork) }}</div>
+        <div>{{ artwork('wheel') }}</div>
+        <div>{{ artwork('frame') }}</div>
+      </div>
+    </div>
+
+    <div class="detail__panel">
+      <div class="stack stack--tight">
+        <span class="eyebrow">{{ item.category }}</span>
+        <h1 class="headline">{{ item.name }}</h1>
+        <p class="muted">{{ item.tagline }}</p>
+      </div>
+
+      <div class="row" style="gap:16px">
+        <span class="detail__price">{{ item.price | money }}</span>
+        <span class="tag">{{ item.rating }} / 5 · {{ item.reviews }} reviews</span>
+      </div>
+
+      <p>{{ item.description }}</p>
+
+      <ul class="checklist">
+        {% for point in item.highlights %}<li>{{ point }}</li>{% endfor %}
+      </ul>
+
+      <div class="detail__buy">
+        <button class="btn" type="button" data-add="{{ item.slug }}">Add to bag</button>
+        <button class="btn btn--ghost" type="button" data-add="{{ item.slug }}" data-then="checkout">Buy now</button>
+      </div>
+
+      <p class="faint" style="font-size:13px">{{ item.lead_time }} · Free delivery over {{ config.FREE_SHIPPING_THRESHOLD | money }}</p>
+
+      <div>
+        <details class="disclosure" open>
+          <summary>Specification</summary>
+          <div class="disclosure__body">
+            <dl class="spec">
+              {% for label, value in item.specs %}
+                <dt>{{ label }}</dt><dd>{{ value }}</dd>
+              {% endfor %}
+            </dl>
+          </div>
+        </details>
+        <details class="disclosure">
+          <summary>Delivery and returns</summary>
+          <div class="disclosure__body">
+            Tracked delivery on every order, free above {{ config.FREE_SHIPPING_THRESHOLD | money }} and
+            {{ config.SHIPPING_FLAT_RATE | money }} below it. Return anything unused within 30 days for a full refund.
+          </div>
+        </details>
+        <details class="disclosure">
+          <summary>Warranty</summary>
+          <div class="disclosure__body">
+            Two years on electronics, five on mechanical parts. Send us the serial and we will replace or repair.
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--canvas">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 class="headline">Goes well with</h2>
+      <a class="link" href="{{ url_for('storefront.shop') }}">All hardware</a>
+    </div>
+    <div class="grid">
+      {% for other in suggestions %}{{ product_card(other) }}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

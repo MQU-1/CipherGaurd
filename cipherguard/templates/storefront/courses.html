@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "partials/cards.html" import course_row %}
+
+{% block title %}Courses — CipherGuard{% endblock %}
+
+{% block content %}
+<section class="wrap" style="padding-top:44px">
+  <div class="stack" style="max-width:660px">
+    <span class="eyebrow">Courses</span>
+    <h1 class="headline">Five courses, each ending in something you have built.</h1>
+    <p class="lede">
+      No certificates, no gamification. Every course finishes with a lab you can run against your own systems, and the
+      material stays available for as long as the account exists.
+    </p>
+  </div>
+
+  <nav class="pill-nav" style="margin:38px 0 8px" aria-label="Levels">
+    <a class="pill" href="{{ url_for('storefront.courses') }}" aria-current="{{ 'true' if not level else 'false' }}">All levels</a>
+    {% for name in levels %}
+      <a class="pill" href="{{ url_for('storefront.courses', level=name) }}" aria-current="{{ 'true' if level == name else 'false' }}">{{ name }}</a>
+    {% endfor %}
+  </nav>
+
+  <div style="padding:26px 0 80px">
+    {% for item in items %}{{ course_row(item) }}{% endfor %}
+    {% if not items %}
+      <p class="muted" style="padding:60px 0">No courses at that level yet.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

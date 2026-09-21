@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Sign in — CipherGuard{% endblock %}
+
+{% block content %}
+<div class="auth">
+  <section class="auth__panel">
+    <div class="auth__inner">
+      <div class="stack stack--tight">
+        <span class="eyebrow">Account</span>
+        <h1 class="headline">Sign in</h1>
+        <p class="muted">Type your password at your usual pace. The rhythm is part of the check.</p>
+      </div>
+
+      <form class="auth__form" method="post" action="{{ url_for('auth.login', next=destination) }}" autocomplete="on">
+        <div class="field">
+          <label class="field__label" for="username">Username</label>
+          <input class="input" id="username" name="username" value="{{ username or '' }}" autocomplete="username" required autofocus>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="password">Password</label>
+          <input class="input" id="password" name="password" type="password" autocomplete="current-password" data-keystroke="primary" required>
+        </div>
+
+        <input class="trap" type="text" name="contact_email" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="hidden" name="holds">
+        <input type="hidden" name="intervals">
+
+        <button class="btn btn--block" type="submit">Sign in</button>
+      </form>
+
+      <div class="auth__foot">
+        <a class="link" href="{{ url_for('auth.reset') }}">Forgotten password</a>
+        <span>New here? <a class="link" href="{{ url_for('auth.register') }}">Create an account</a></span>
+      </div>
+    </div>
+  </section>
+
+  <aside class="auth__aside">
+    <div class="auth__aside-inner">
+      <div class="stack stack--tight">
+        <span class="eyebrow">Demonstration accounts</span>
+        <p class="muted" style="font-size:14px">Seeded on first boot so the layers can be inspected without creating anything.</p>
+      </div>
+
+      <div class="credentials">
+        <div><span class="mono">admin</span><span class="mono faint">AdminCipherGuard1!</span></div>
+        <div><span class="mono">superadmin</span><span class="mono faint">SuperAdminTraffic1!</span></div>
+        <div><span class="mono">demo</span><span class="mono faint">DemoHoneyword1!</span></div>
+      </div>
+
+      <div class="stack stack--tight">
+        <span class="eyebrow">What happens when you submit</span>
+        <ol class="layered" style="margin-top:6px">
+          <li><span>01</span><div>The password is checked against twenty hashes, one real and nineteen decoys.</div></li>
+          <li><span>02</span><div>Your typing rhythm is compared with the enrolled profile and scored.</div></li>
+          <li><span>03</span><div>If two-factor is on, a rolling six-digit code is requested next.</div></li>
+          <li><span>04</span><div>The outcome is appended to the audit trail hidden inside a carrier image.</div></li>
+        </ol>
+      </div>
+    </div>
+  </aside>
+</div>
+{% endblock %}

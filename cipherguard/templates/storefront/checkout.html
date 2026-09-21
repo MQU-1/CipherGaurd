@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout — CipherGuard{% endblock %}
+
+{% block content %}
+<section class="wrap">
+  <div class="checkout">
+    <form class="checkout__form" method="post" action="{{ url_for('storefront.checkout') }}">
+      <div class="stack">
+        <span class="eyebrow">Checkout</span>
+        <h1 class="headline">Confirm your order</h1>
+        <p class="muted">Signed in as {{ current_username }}.</p>
+      </div>
+
+      <div class="notice">
+        <div>
+          <strong>Demonstration checkout.</strong>
+          No payment is taken and the details below are not stored. The order itself is sealed with an HMAC and
+          embedded in the invoice carrier image.
+        </div>
+      </div>
+
+      {% if totals.shippable %}
+        <fieldset style="border:0;padding:0;margin:0" class="stack">
+          <legend class="eyebrow" style="padding:0 0 14px">Delivery</legend>
+          <div class="checkout__pair">
+            <div class="field">
+              <label class="field__label" for="first-name">First name</label>
+              <input class="input" id="first-name" name="first_name" autocomplete="given-name">
+            </div>
+            <div class="field">
+              <label class="field__label" for="last-name">Last name</label>
+              <input class="input" id="last-name" name="last_name" autocomplete="family-name">
+            </div>
+          </div>
+          <div class="field">
+            <label class="field__label" for="address">Address</label>
+            <input class="input" id="address" name="address" autocomplete="street-address">
+          </div>
+          <div class="checkout__pair">
+            <div class="field">
+              <label class="field__label" for="city">City</label>
+              <input class="input" id="city" name="city" autocomplete="address-level2">
+            </div>
+            <div class="field">
+              <label class="field__label" for="postcode">Postcode</label>
+              <input class="input" id="postcode" name="postcode" autocomplete="postal-code">
+            </div>
+          </div>
+        </fieldset>
+      {% else %}
+        <div class="stack">
+          <span class="eyebrow">Delivery</span>
+          <p class="muted">Course access only, nothing to ship. Enrolment appears on your account as soon as the order is placed.</p>
+        </div>
+      {% endif %}
+
+      <button class="btn btn--block" type="submit">Place order</button>
+      <a class="link faint" style="font-size:13px" href="{{ url_for('storefront.basket') }}">Back to bag</a>
+    </form>
+
+    <aside class="bag__summary">
+      <span class="eyebrow">{{ totals.count }} item{{ '' if totals.count == 1 else 's' }}</span>
+      <div class="stack">
+        {% for row in totals.lines %}
+          <div class="row row--between" style="align-items:flex-start;gap:18px;font-size:14px">
+            <span>
+              {{ row.item.name }}
+              {% if row.item.kind == 'product' %}<span class="faint">× {{ row.quantity }}</span>{% endif %}
+            </span>
+            <span class="numeral">{{ row.subtotal | money }}</span>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="totals">
+        <div class="totals__row"><span>Subtotal</span><span>{{ totals.subtotal | money }}</span></div>
+        <div class="totals__row">
+          <span>Delivery</span>
+          <span>{% if not totals.shippable %}Digital{% elif totals.shipping %}{{ totals.shipping | money }}{% else %}Free{% endif %}</span>
+        </div>
+        <div class="totals__row totals__row--final"><span>Total</span><span>{{ totals.total | money }}</span></div>
+      </div>
+    </aside>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Reset password — CipherGuard{% endblock %}
+
+{% block content %}
+<section class="wrap wrap--form" style="padding-block:76px 120px">
+  {% if step == 1 %}
+    <div class="stack stack--loose">
+      <div class="stack stack--tight">
+        <span class="eyebrow">Recovery</span>
+        <h1 class="headline">Reset your password</h1>
+        <p class="muted">Start with the username. We will ask the recovery question you chose at registration.</p>
+      </div>
+
+      <form class="auth__form" method="post" action="{{ url_for('auth.reset') }}">
+        <div class="field">
+          <label class="field__label" for="username">Username</label>
+          <input class="input" id="username" name="username" autocomplete="username" required autofocus>
+        </div>
+        <button class="btn btn--block" type="submit">Continue</button>
+      </form>
+
+      <p class="faint" style="font-size:13px"><a class="link" href="{{ url_for('auth.login') }}">Back to sign in</a></p>
+    </div>
+  {% else %}
+    <div class="stack stack--loose">
+      <div class="stack stack--tight">
+        <span class="eyebrow">Recovery for {{ username }}</span>
+        <h1 class="headline">Answer your question</h1>
+        <p class="muted">The stored answer is enciphered with {{ record.answer.cipher | capitalize }}. Your answer is enciphered the same way and compared.</p>
+      </div>
+
+      <div class="notice">
+        <div><strong>{{ record.question }}</strong></div>
+      </div>
+
+      <form class="auth__form" method="post" action="{{ url_for('auth.reset_verify') }}">
+        <div class="field">
+          <label class="field__label" for="answer">Answer</label>
+          <input class="input" id="answer" name="answer" autocomplete="off" required autofocus>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="password">New password</label>
+          <input class="input" id="password" name="password" type="password" autocomplete="new-password" data-keystroke="primary" data-strength required>
+          <div class="meter" data-strength-meter data-score="0"><span></span><span></span><span></span><span></span></div>
+          <span class="field__hint" data-strength-label></span>
+          <span class="field__hint" data-strength-advice></span>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="confirm">Repeat new password</label>
+          <input class="input" id="confirm" name="confirm" type="password" autocomplete="new-password" required>
+        </div>
+
+        <input type="hidden" name="holds">
+        <input type="hidden" name="intervals">
+
+        <button class="btn btn--block" type="submit">Set new password</button>
+      </form>
+
+      <p class="faint" style="font-size:13px">
+        {{ config.RESET_ANSWER_ATTEMPTS }} attempts, then the flow closes and the attempt is logged.
+      </p>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

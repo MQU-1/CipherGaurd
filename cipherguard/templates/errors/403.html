@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Not permitted — CipherGuard{% endblock %}
+
+{% block content %}
+<section class="wrap error-page">
+  <span class="eyebrow">403</span>
+  <h1 class="display">That belongs to someone else.</h1>
+  <p class="lede" style="text-align:center">Orders and sealed invoices are readable only by the account that placed them.</p>
+  <div class="row" style="gap:12px">
+    <a class="btn" href="{{ url_for('storefront.orders') }}">Your orders</a>
+    <a class="btn btn--ghost" href="{{ url_for('storefront.home') }}">Home</a>
+  </div>
+</section>
+{% endblock %}

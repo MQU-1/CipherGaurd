@@ -1,0 +1,53 @@
+{% from "partials/artwork.html" import glyph, icon %}
+
+<div class="announce">
+  <span>Free delivery over {{ config.FREE_SHIPPING_THRESHOLD | money }}</span>
+  <span>30-day returns</span>
+  <span>Courses include lifetime access</span>
+</div>
+
+<header class="masthead">
+  <div class="wrap masthead__row">
+    <a class="brand" href="{{ url_for('storefront.home') }}">
+      {{ glyph() }}
+      <span class="brand__word">CipherGuard</span>
+    </a>
+
+    <nav class="nav" aria-label="Primary">
+      <a href="{{ url_for('storefront.shop') }}" {% if request.endpoint == 'storefront.shop' %}aria-current="page"{% endif %}>Shop</a>
+      <a href="{{ url_for('storefront.courses') }}" {% if request.endpoint in ('storefront.courses', 'storefront.course') %}aria-current="page"{% endif %}>Courses</a>
+      <a href="{{ url_for('storefront.security') }}" {% if request.endpoint == 'storefront.security' %}aria-current="page"{% endif %}>How we protect you</a>
+      {% if is_admin %}
+        <a href="{{ url_for('admin.audit') }}" {% if request.blueprint == 'admin' %}aria-current="page"{% endif %}>Operations</a>
+      {% endif %}
+    </nav>
+
+    <div class="masthead__actions">
+      <button class="icon-btn" type="button" data-search-toggle aria-expanded="false" aria-controls="search-panel" aria-label="Search">
+        {{ icon('search') }}
+      </button>
+      <a class="icon-btn" href="{{ url_for('account.overview') if current_username else url_for('auth.login') }}" aria-label="{{ 'Your account' if current_username else 'Sign in' }}">
+        {{ icon('user') }}
+      </a>
+      <button class="icon-btn" type="button" data-drawer-open aria-label="Open bag">
+        {{ icon('bag') }}
+        <span class="icon-btn__count" data-cart-count data-empty="{{ 'true' if cart_count == 0 else 'false' }}">{{ cart_count }}</span>
+      </button>
+      {% if current_username %}
+        <a class="btn btn--quiet btn--small" href="{{ url_for('auth.logout') }}">Sign out</a>
+      {% else %}
+        <a class="btn btn--small" href="{{ url_for('auth.register') }}">Create account</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="search-panel" id="search-panel" data-open="false">
+    <div class="wrap">
+      <form method="get" action="{{ url_for('storefront.search') }}" role="search">
+        <label class="visually-hidden" for="search-input">Search the catalogue</label>
+        <input class="input" id="search-input" type="search" name="q" placeholder="Search hardware and courses" autocomplete="off">
+        <p class="faint" style="margin-top:12px;font-size:12.5px">Every query is written to the audit trail. Injection attempts are compiled, never executed.</p>
+      </form>
+    </div>
+  </div>
+</header>

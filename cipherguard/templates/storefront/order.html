@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Order {{ invoice.order_id }} — CipherGuard{% endblock %}
+
+{% block content %}
+<section class="wrap" style="padding-block:44px 90px">
+  <div class="stack" style="max-width:640px">
+    <span class="eyebrow">Order {{ invoice.order_id }}</span>
+    <h1 class="headline">Thank you. Your order is recorded.</h1>
+    <p class="lede">
+      Placed {{ invoice.ts | moment }}. The invoice below was sealed before it was hidden in the carrier image, so any
+      edit to those pixels breaks the seal.
+    </p>
+  </div>
+
+  <div class="notice {{ 'notice--good' if intact else 'notice--alert' }}" style="margin:32px 0;max-width:760px">
+    <div>
+      <strong>{{ 'Seal verified.' if intact else 'Seal broken.' }}</strong>
+      {% if intact %}
+        The HMAC over this invoice matches, and the order number and total inside the sealed payload agree with what
+        is shown here.
+      {% else %}
+        The sealed payload does not match this record. Treat the figures below as unverified.
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="table__scroll" style="max-width:860px">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Type</th>
+          <th>Qty</th>
+          <th style="text-align:right">Price</th>
+          <th style="text-align:right">Line total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for line in invoice.lines %}
+          <tr>
+            <td>{{ line.name }}</td>
+            <td class="faint">{{ 'Course' if line.kind == 'course' else 'Hardware' }}</td>
+            <td class="numeral">{{ line.quantity }}</td>
+            <td class="numeral" style="text-align:right">{{ line.price | money }}</td>
+            <td class="numeral" style="text-align:right">{{ line.subtotal | money }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div style="max-width:340px;margin-top:30px">
+    <div class="totals">
+      <div class="totals__row"><span>Subtotal</span><span>{{ invoice.subtotal | money }}</span></div>
+      <div class="totals__row"><span>Delivery</span><span>{{ invoice.shipping | money if invoice.shipping else 'Free' }}</span></div>
+      <div class="totals__row totals__row--final"><span>Total</span><span>{{ invoice.total | money }}</span></div>
+    </div>
+  </div>
+
+  <div class="row row--wrap" style="gap:12px;margin-top:38px">
+    <a class="btn btn--quiet btn--small" href="{{ url_for('storefront.sealed_invoice', order_id=invoice.order_id) }}">View sealed payload</a>
+    <a class="btn btn--quiet btn--small" href="{{ url_for('storefront.orders') }}">All orders</a>
+    <a class="btn btn--quiet btn--small" href="{{ url_for('storefront.shop') }}">Keep shopping</a>
+  </div>
+</section>
+{% endblock %}

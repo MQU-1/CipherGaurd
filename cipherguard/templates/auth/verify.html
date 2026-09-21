@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Two-factor — CipherGuard{% endblock %}
+
+{% block content %}
+<section class="wrap wrap--form" style="padding-block:90px 130px">
+  <div class="stack stack--loose">
+    <div class="stack stack--tight">
+      <span class="eyebrow">Second factor</span>
+      <h1 class="headline">Enter your code</h1>
+      <p class="muted">Six digits from your authenticator app for <strong>{{ username }}</strong>. Codes roll every 30 seconds.</p>
+    </div>
+
+    <form class="auth__form" method="post" action="{{ url_for('auth.verify') }}">
+      <div class="field">
+        <label class="field__label" for="code">Authenticator code</label>
+        <input class="input mono" id="code" name="code" inputmode="numeric" pattern="[0-9]*" maxlength="6"
+               autocomplete="one-time-code" style="font-size:22px;letter-spacing:0.4em;text-align:center" required autofocus>
+      </div>
+      <button class="btn btn--block" type="submit">Verify</button>
+    </form>
+
+    <p class="faint" style="font-size:13px">
+      Lost the device? <a class="link" href="{{ url_for('auth.reset') }}">Reset through your recovery question</a>.
+    </p>
+  </div>
+</section>
+{% endblock %}

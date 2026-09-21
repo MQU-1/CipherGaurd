@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Create an account — CipherGuard{% endblock %}
+
+{% block content %}
+<div class="auth">
+  <section class="auth__panel">
+    <div class="auth__inner">
+      <div class="stack stack--tight">
+        <span class="eyebrow">Account</span>
+        <h1 class="headline">Create an account</h1>
+        <p class="muted">Type the password twice at a natural pace. Both samples build your keystroke profile.</p>
+      </div>
+
+      <form class="auth__form" method="post" action="{{ url_for('auth.register') }}">
+        <div class="field">
+          <label class="field__label" for="username">Username</label>
+          <input class="input" id="username" name="username" value="{{ form.username or '' }}" autocomplete="username" required autofocus>
+          <span class="field__hint">Letters and digits, 3 to 20 characters.</span>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="password">Password</label>
+          <input class="input" id="password" name="password" type="password" autocomplete="new-password" data-keystroke="primary" data-strength required>
+          <div class="meter" data-strength-meter data-score="0"><span></span><span></span><span></span><span></span></div>
+          <span class="field__hint" data-strength-label></span>
+          <span class="field__hint" data-strength-advice></span>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="confirm">Repeat password</label>
+          <input class="input" id="confirm" name="confirm" type="password" autocomplete="new-password" data-keystroke="confirm" required>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="question">Recovery question</label>
+          <select class="input" id="question" name="question" required>
+            {% for question in questions %}
+              <option value="{{ question }}" {% if form.question == question %}selected{% endif %}>{{ question }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="answer">Answer</label>
+          <input class="input" id="answer" name="answer" autocomplete="off" required>
+          <span class="field__hint">Stored as ciphertext under a key derived from a per-account salt.</span>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="cipher">Cipher</label>
+          <select class="input" id="cipher" name="cipher">
+            <option value="vigenere" {% if form.cipher == 'vigenere' %}selected{% endif %}>Vigenère</option>
+            <option value="playfair" {% if form.cipher == 'playfair' %}selected{% endif %}>Playfair</option>
+          </select>
+        </div>
+
+        <input class="trap" type="text" name="contact_email" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="hidden" name="holds">
+        <input type="hidden" name="intervals">
+        <input type="hidden" name="holds_confirm">
+        <input type="hidden" name="intervals_confirm">
+
+        <button class="btn btn--block" type="submit">Create account</button>
+      </form>
+
+      <div class="auth__foot">
+        <span>Already registered? <a class="link" href="{{ url_for('auth.login') }}">Sign in</a></span>
+      </div>
+    </div>
+  </section>
+
+  <aside class="auth__aside">
+    <div class="auth__aside-inner">
+      <div class="stack stack--tight">
+        <span class="eyebrow">What gets stored</span>
+        <h2 class="subhead">Nothing you typed, exactly.</h2>
+      </div>
+
+      <ol class="layered">
+        <li><span>01</span><div><b>Twenty hashes</b>Your password produces one real PBKDF2 hash and nineteen decoys, shuffled so position gives nothing away.</div></li>
+        <li><span>02</span><div><b>A timing profile</b>Mean hold and gap times per position, with a floor on the deviation so ordinary variation does not lock you out.</div></li>
+        <li><span>03</span><div><b>Ciphertext, not an answer</b>The recovery answer is enciphered with a key derived from your salt and the site pepper.</div></li>
+        <li><span>04</span><div><b>An avatar with your name inside it</b>Generated on registration, with your username written into the least significant bits.</div></li>
+      </ol>
+    </div>
+  </aside>
+</div>
+{% endblock %}

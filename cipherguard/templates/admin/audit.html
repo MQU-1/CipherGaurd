@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% from "partials/tags.html" import result_tag %}
+
+{% block title %}Audit trail — CipherGuard{% endblock %}
+
+{% block content %}
+<section class="wrap">
+  <div class="admin-head">
+    <div class="stack stack--tight">
+      <span class="eyebrow">Operations</span>
+      <h1 class="headline">Audit trail</h1>
+      <p class="muted">{{ total }} records, read back out of the carrier image on every request.</p>
+    </div>
+    <div class="row" style="gap:10px">
+      <a class="btn btn--quiet btn--small" href="{{ url_for('admin.traffic_log') }}">Request log</a>
+      <a class="btn btn--quiet btn--small" href="{{ url_for('admin.audit_entries') }}">JSON</a>
+      <a class="btn btn--quiet btn--small" href="{{ url_for('admin.audit_carrier') }}">Carrier image</a>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="stat">
+      <div class="stat__value">{{ tallies.success }}</div>
+      <div class="stat__label">Successful</div>
+    </div>
+    <div class="stat">
+      <div class="stat__value">{{ tallies.fail }}</div>
+      <div class="stat__label">Failed</div>
+    </div>
+    <div class="stat">
+      <div class="stat__value">{{ tallies.honeyword }}</div>
+      <div class="stat__label">Decoy hits</div>
+    </div>
+    <div class="stat">
+      <div class="stat__value">{{ tallies.lockout }}</div>
+      <div class="stat__label">Lockouts</div>
+    </div>
+    <div class="stat">
+      <div class="stat__value">{{ tallies.sqli }}</div>
+      <div class="stat__label">Injection probes</div>
+    </div>
+    <div class="stat">
+      <div class="stat__value">{{ tallies.honeypot }}</div>
+      <div class="stat__label">Trap fields</div>
+    </div>
+  </div>
+
+  <div class="admin-grid">
+    <div>
+      <h2 class="subhead">Events over the last fortnight</h2>
+      <div class="chart">
+        {% for point in series %}
+          <div class="chart__bar" title="{{ point.label }}: {{ point.value }}">
+            <div class="chart__fill" style="height:{{ point.height }}%"></div>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="chart__scale">
+        <span>{{ series[0].label }}</span>
+        <span>{{ series[-1].label }}</span>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="subhead">Most active accounts</h2>
+      <ul class="posture" style="margin-top:16px">
+        {% for name, count in actors %}
+          <li>
+            <div style="font-weight:500">{{ name }}</div>
+            <span class="tag">{{ count }} events</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div style="padding-bottom:90px">
+    <h2 class="subhead" style="margin-bottom:16px">Every record</h2>
+    <div class="table__scroll">
+      <table class="table">
+        <thead>
+          <tr><th>When</th><th>Address</th><th>Account</th><th>Action</th><th>Result</th><th>Detail</th></tr>
+        </thead>
+        <tbody>
+          {% for entry in entries %}
+            <tr>
+              <td class="numeral faint" style="white-space:nowrap">{{ entry.ts | moment }}</td>
+              <td class="mono faint">{{ entry.ip }}</td>
+              <td>{{ entry.user }}</td>
+              <td>{{ entry.action }}</td>
+              <td>{{ result_tag(entry.result) }}</td>
+              <td class="muted">{{ entry.detail }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if not entries %}<p class="muted" style="padding:40px 0">The carrier image holds no records yet.</p>{% endif %}
+  </div>
+</section>
+{% endblock %}
